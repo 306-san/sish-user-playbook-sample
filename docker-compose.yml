@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ansible:
+    build: .
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/sync
+      - $HOME/.ssh:/root/.ssh

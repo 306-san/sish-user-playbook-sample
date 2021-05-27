@@ -1,0 +1,5 @@
+[management]
+aqours.dev
+
+[management:vars]
+ansible_ssh_user=ubuntu

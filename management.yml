@@ -1,0 +1,6 @@
+---
+- hosts: management
+  become: True
+  roles:
+    - add_sish_users
+

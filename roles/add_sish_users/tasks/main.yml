@@ -1,0 +1,31 @@
+---
+- name: sish ユーザー追加
+  get_url:
+    url: "{{ item.public_key }}"
+    dest: "/home/ubuntu/test-sish/deploy/pubkeys/{{ item.name }}"
+    mode: '0400'
+    owner: 'ubuntu'
+    group: 'ubuntu'
+    force: yes
+  with_items:  "{{ users }}"
+
+- name: 現状の sish ユーザーを取得
+  find:
+    paths: '/home/ubuntu/test-sish/deploy/pubkeys/'
+  register: current_users
+
+- name: 現状の sish ユーザーリストを作成
+  set_fact:
+    current_user_list: >
+      {{ current_users.files | map(attribute='path') | map('basename') | list }}
+
+- name: 削除対象の sish ユーザーリストを作成
+  set_fact:
+    unneeded_users: >
+      {{ current_user_list | difference(users | map(attribute='name') | list) }}
+
+- name: 削除対象の sish ユーザーを削除
+  ansible.builtin.file:
+    path: "/home/ubuntu/test-sish/deploy/pubkeys/{{ item }}"
+    state: absent
+  with_items:  "{{ unneeded_users }}"
